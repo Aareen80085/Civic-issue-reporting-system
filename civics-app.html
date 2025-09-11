@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Smart Civic Intelligence Platform - Jharkhand</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Smart Civic Jharkhand">
+    
+    <!-- CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mapbox-gl@2.15.0/dist/mapbox-gl.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/mapbox-gl@2.15.0/dist/mapbox-gl.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PWA Manifest is now generated in script.js -->
+</head>
+<body class="bg-gray-50">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <h2 class="text-xl font-semibold text-gray-800" data-translate="loadingMessage">Loading Public Service Platform...</h2>
+            <p class="text-gray-600 mt-2" data-translate="platformName">Smart Civic Intelligence Platform</p>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-40"  role="banner">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center" aria-label="Platform Logo">
+                        <i class="fas fa-city text-white text-xl" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800" data-translate="appName">Smart Civic</h1>
+                        <p class="text-xs text-gray-600" data-translate="appState">Jharkhand</p>
+                    </div>
+                </div>
+                
+                <nav class="hidden md:flex items-center space-x-6" aria-label="Main navigation">
+                    <select id="languageSelect" class="border rounded px-3 py-1 text-sm accessibility-focus" aria-label="Select language">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="sa">ᱥᱟᱱᱛᱟᱲᱤ</option>
+                        <option value="mu">मुंडारी</option>
+                        <option value="ho">हो</option>
+                    </select>
+                    
+                    <div class="flex items-center space-x-2" aria-label="Online status">
+                        <div class="pulse-dot w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="text-sm text-gray-600" data-translate="onlineStatus">Online</span>
+                    </div>
+                    
+                    <button id="emergencyBtn" class="bg-red-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-red-700 accessibility-focus" aria-label="Emergency">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span data-translate="emergencyBtn">Emergency</span>
+                    </button>
+                    
+                    <div class="flex items-center space-x-2" id="userNav">
+                        <img id="userAvatar" class="w-8 h-8 rounded-full" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%236b7280'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='20'%3EU%3C/text%3E%3C/svg%3E" alt="User Avatar">
+                        <span id="userNameDisplay" class="text-sm font-medium text-gray-700">User</span>
+                        <button id="logoutBtn" class="text-red-600 hover:text-red-800 accessibility-focus" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </nav>
+                
+                <button id="mobileMenuBtn" class="md:hidden text-gray-600 accessibility-focus" aria-label="Open mobile menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <nav id="mobileMenu" class="hidden md:hidden bg-white border-t fixed bottom-0 left-0 right-0 z-50" aria-label="Mobile navigation">
+        <div class="px-4 py-2 space-y-2">
+            <button class="nav-item w-full text-left px-3 py-2 rounded hover:bg-gray-100 accessibility-focus" data-section="dashboard">
+                <i class="fas fa-tachometer-alt mr-2"></i> <span data-translate="navDashboard">Dashboard</span>
+            </button>
+            <button class="nav-item w-full text-left px-3 py-2 rounded hover:bg-gray-100 accessibility-focus" data-section="complaints">
+                <i class="fas fa-clipboard-list mr-2"></i> <span data-translate="navComplaints">Complaints</span>
+            </button>
+            <button class="nav-item w-full text-left px-3 py-2 rounded hover:bg-gray-100 accessibility-focus" data-section="analytics">
+                <i class="fas fa-chart-bar mr-2"></i> <span data-translate="navAnalytics">Analytics</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="fixed inset-0 gradient-bg flex items-center justify-center z-30">
+        <div class="glass-effect rounded-2xl p-8 w-full max-w-md mx-4">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-city text-blue-600 text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-2" data-translate="welcome">Welcome</h2>
+                <p class="text-blue-100" data-translate="platformName">Smart Civic Intelligence Platform</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6" autocomplete="off">
+                <div>
+                    <label for="username" class="block text-blue-100 text-sm font-medium mb-2" data-translate="loginUsernameLabel">Email/Username</label>
+                    <input type="text" id="username" name="username" required 
+                           class="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 placeholder-blue-400 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 accessibility-focus"
+                           data-translate-placeholder="loginUsernamePlaceholder" placeholder="Enter your email or username" autocomplete="username">
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-blue-100 text-sm font-medium mb-2" data-translate="loginPasswordLabel">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" required 
+                               class="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 placeholder-blue-400 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 accessibility-focus"
+                               data-translate-placeholder="loginPasswordPlaceholder" placeholder="Enter your password" autocomplete="current-password">
+                        <button type="button" id="togglePassword" tabindex="0" class="absolute right-3 top-3 text-blue-200 hover:text-white accessibility-focus" aria-label="Show or hide password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" id="loginBtn" class="w-full bg-white text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-200 accessibility-focus" data-translate="loginBtn">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Login
+                </button>
+                
+                <div id="loginError" class="hidden text-center text-red-200 bg-red-600 bg-opacity-30 rounded-lg py-2 px-3 text-sm"></div>
+                
+                <div class="text-center">
+                    <button type="button" id="forgotPasswordBtn" class="text-blue-200 hover:text-white text-sm accessibility-focus" data-translate="forgotPassword">
+                        Forgot Password?
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Demo Credentials -->
+            <div class="mt-6 p-4 bg-white/10 rounded-lg">
+                <h3 class="text-white font-medium mb-2" data-translate="demoCredentials">Demo Credentials:</h3>
+                <div class="text-sm text-blue-100 space-y-1">
+                    <p><strong>Citizen:</strong> citizen@jharkhand.gov.in / citizen123</p>
+                    <p><strong>Dept Admin:</strong> admin.pwd@jharkhand.gov.in / admin123</p>
+                    <p><strong>Super Admin:</strong> superadmin@jharkhand.gov.in / super123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--
+[PROMPT_SUGGESTION]How to implement infinite scrolling for the complaints list?[/PROMPT_SUGGESTION]
+[PROMPT_SUGGESTION]Can you help me add a search bar to the complaints page?[/PROMPT_SUGGESTION]
+-->
+    <!-- Main Application -->
+    <div id="mainApp" class="hidden">
+        <!-- Sidebar Navigation -->
+        <div class="flex">
+            <aside id="sidebar" class="hidden lg:block w-64 bg-white shadow-lg min-h-screen">
+                <nav class="p-4">
+                    <div class="space-y-2">
+                        <button class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 flex items-center space-x-3 accessibility-focus" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt text-blue-600"></i>
+                            <span data-translate="navDashboard">Dashboard</span>
+                        </button>
+                        
+                        <button class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 flex items-center space-x-3 accessibility-focus" data-section="complaints">
+                            <i class="fas fa-clipboard-list text-green-600"></i>
+                            <span data-translate="navComplaints">Complaints</span>
+                            <span id="complaintCount" class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">12</span>
+                        </button>
+                        
+                        <button class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 flex items-center space-x-3 accessibility-focus" data-section="analytics">
+                            <i class="fas fa-chart-bar text-purple-600"></i>
+                            <span data-translate="navAnalytics">Analytics</span>
+                        </button>
+                        
+                        <button class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 flex items-center space-x-3 accessibility-focus" data-section="iot">
+                            <i class="fas fa-satellite-dish text-orange-600"></i>
+                            <span data-translate="navIot">IoT Sensors</span>
+                        </button>
+                        
+                        <button class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 flex items-center space-x-3 accessibility-focus" data-section="blockchain">
+                            <i class="fas fa-cubes text-indigo-600"></i>
+                            <span data-translate="navBlockchain">Blockchain</span>
+                        </button>
+                        
+                        <button class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 flex items-center space-x-3 accessibility-focus" data-section="budget">
+                            <i class="fas fa-coins text-yellow-600"></i>
+                            <span data-translate="navBudget">Budget Tracker</span>
+                        </button>
+                        
+                        <button class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 flex items-center space-x-3 accessibility-focus" data-section="community">
+                            <i class="fas fa-users text-pink-600"></i>
+                            <span data-translate="navCommunity">Community</span>
+                        </button>
+                        
+                        <button class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 flex items-center space-x-3 accessibility-focus" data-section="emergency">
+                            <i class="fas fa-ambulance text-red-600"></i>
+                            <span data-translate="navEmergency">Emergency</span>
+                        </button>
+                        
+                        <div id="adminOnlyNav" class="hidden">
+                            <button class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 flex items-center space-x-3 accessibility-focus" data-section="users">
+                                <i class="fas fa-user-cog text-gray-600"></i>
+                                <span data-translate="navUserMgmt">User Management</span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 lg:ml-0">
+                <!-- Dashboard Section -->
+                <section id="dashboardSection" class="p-6">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2" data-translate="dashboardTitle">Dashboard</h2>
+                        <p class="text-gray-600" data-translate="dashboardSubtitle">Welcome to Smart Civic Intelligence Platform</p>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm" data-translate="statTotalComplaints">Total Complaints</p>
+                                    <p class="text-3xl font-bold text-blue-600" id="totalComplaints">1,247</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-clipboard-list text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="text-green-500 text-sm font-medium">+12.5%</span>
+                                <span class="text-gray-500 text-sm ml-2" data-translate="statFromLastMonth">from last month</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm" data-translate="statResolved">Resolved</p>
+                                    <p class="text-3xl font-bold text-green-600" id="resolvedComplaints">1,089</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="text-green-500 text-sm font-medium">87.3%</span>
+                                <span class="text-gray-500 text-sm ml-2" data-translate="statResolutionRate">resolution rate</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm" data-translate="statAvgResponse">Avg Response Time</p>
+                                    <p class="text-3xl font-bold text-orange-600" id="avgResponseTime">2.4</p>
+                                </div>
+                                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-clock text-orange-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="text-gray-500 text-sm" data-translate="statDays">days</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm" data-translate="statCivicHealth">Civic Health Index</p>
+                                    <p class="text-3xl font-bold text-purple-600" id="civicHealthIndex">8.7</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-heartbeat text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="text-green-500 text-sm font-medium" data-translate="statExcellent">Excellent</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6 h-72">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="chartComplaintTrends">Complaint Trends</h3>
+                            <canvas id="trendChart" class="w-full h-full"></canvas>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6 h-72">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="chartDeptPerf">Department Performance</h3>
+                            <canvas id="performanceChart" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Heatmap -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="chartHeatmap">Complaint Heatmap</h3>
+                        <div id="map" style="height: 400px;" class="rounded-lg"></div>
+                    </div>
+
+                    <!-- AI Insights -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="aiInsightsTitle">AI-Powered Insights</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="p-4 bg-blue-50 rounded-lg">
+                                <h4 class="font-medium text-blue-800 mb-2" data-translate="aiPredictive">Predictive Maintenance</h4>
+                                <p class="text-sm text-blue-600" data-translate="aiPredictiveText">Road repairs needed in Sector 5 within 2 weeks based on complaint patterns</p>
+                            </div>
+                            <div class="p-4 bg-green-50 rounded-lg">
+                                <h4 class="font-medium text-green-800 mb-2" data-translate="aiEfficiency">Efficiency Improvement</h4>
+                                <p class="text-sm text-green-600" data-translate="aiEfficiencyText">Water department response time improved by 30% this month</p>
+                            </div>
+                            <div class="p-4 bg-purple-50 rounded-lg">
+                                <h4 class="font-medium text-purple-800 mb-2" data-translate="aiSentiment">Sentiment Analysis</h4>
+                                <p class="text-sm text-purple-600" data-translate="aiSentimentText">78% positive citizen feedback on recent infrastructure improvements</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Complaints Section -->
+                <section id="complaintsSection" class="hidden p-6">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2" data-translate="complaintsTitle">Complaint Management</h2>
+                        <p class="text-gray-600" data-translate="complaintsSubtitle">Submit and track civic complaints</p>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="flex flex-wrap gap-4 mb-6">
+                        <button id="newComplaintBtn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 flex items-center space-x-2 accessibility-focus">
+                            <i class="fas fa-plus"></i>
+                            <span data-translate="newComplaintBtn">New Complaint</span>
+                        </button>
+                        
+                        <button id="voiceComplaintBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 flex items-center space-x-2 accessibility-focus">
+                            <i class="fas fa-microphone"></i>
+                            <span data-translate="voiceComplaintBtn">Voice Complaint</span>
+                        </button>
+                        
+                        <button class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 flex items-center space-x-2 accessibility-focus">
+                            <i class="fas fa-camera"></i>
+                            <span data-translate="photoReportBtn">Photo Report</span>
+                        </button>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <select class="border rounded-lg px-3 py-2 accessibility-focus" data-translate-options='{"allDepts":"All Departments", "pwd":"PWD", "electricity":"Electricity", "water":"Water", "health":"Health", "waste":"Waste Management"}'>
+                                <option value="allDepts">All Departments</option>
+                                <option value="pwd">PWD</option>
+                                <option value="electricity">Electricity</option>
+                                <option value="water">Water</option>
+                                <option value="health">Health</option>
+                                <option value="waste">Waste Management</option>
+                            </select>
+                            
+                            <select class="border rounded-lg px-3 py-2 accessibility-focus" data-translate-options='{"allStatus":"All Status", "open":"Open", "inProgress":"In Progress", "resolved":"Resolved", "closed":"Closed"}'>
+                                <option value="allStatus">All Status</option>
+                                <option value="open">Open</option>
+                                <option value="inProgress">In Progress</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                            
+                            <select class="border rounded-lg px-3 py-2 accessibility-focus" data-translate-options='{"allPriority":"All Priority", "high":"High", "medium":"Medium", "low":"Low"}'>
+                                <option value="allPriority">All Priority</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                            
+                            <input type="text" data-translate-placeholder="searchComplaints" placeholder="Search complaints..." class="border rounded-lg px-3 py-2 accessibility-focus">
+                        </div>
+                    </div>
+
+                    <!-- Complaints List -->
+                    <div class="space-y-4" id="complaintsList">
+                        <!-- Complaint Card 1 -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">#PWD-2024-001</h3>
+                                    <p class="text-gray-600" data-translate="complaintDesc1">Road pothole near City Hospital</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium" data-translate="priorityHigh">High Priority</span>
+                                    <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium" data-translate="statusInProgress">In Progress</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div>
+                                    <p class="text-sm text-gray-500" data-translate="cardDept">Department</p>
+                                    <p class="font-medium" data-translate="deptPwd">PWD</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500" data-translate="cardLocation">Location</p>
+                                    <p class="font-medium">Ranchi, Sector 5</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500" data-translate="cardSla">SLA Deadline</p>
+                                    <p class="font-medium text-orange-600" data-translate="daysRemaining" data-translate-vars='{"days": 2}'>2 days remaining</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="sentiment-negative w-4 h-4 rounded-full" title="Negative sentiment detected"></div>
+                                    <span class="text-sm text-gray-600" data-translate="submittedAgo" data-translate-vars='{"days": 3}'>Submitted 3 days ago</span>
+                                    <div class="blockchain-verified w-4 h-4 rounded-full" title="Blockchain verified"></div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800 accessibility-focus" aria-label="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-green-600 hover:text-green-800 accessibility-focus" aria-label="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-purple-600 hover:text-purple-800 accessibility-focus" aria-label="Locate">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Complaint Card 2 -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">#WATER-2024-045</h3>
+                                    <p class="text-gray-600" data-translate="complaintDesc2">Water supply disruption in Ward 12</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium" data-translate="priorityMedium">Medium Priority</span>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium" data-translate="statusResolved">Resolved</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div>
+                                    <p class="text-sm text-gray-500" data-translate="cardDept">Department</p>
+                                    <p class="font-medium" data-translate="deptWater">Water Supply</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500" data-translate="cardLocation">Location</p>
+                                    <p class="font-medium">Dhanbad, Ward 12</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500" data-translate="cardResolutionTime">Resolution Time</p>
+                                    <p class="font-medium text-green-600">1.5 days</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="sentiment-positive w-4 h-4 rounded-full" title="Positive sentiment"></div>
+                                    <span class="text-sm text-gray-600" data-translate="resolvedAgo" data-translate-vars='{"days": 1}'>Resolved 1 day ago</span>
+                                    <div class="blockchain-verified w-4 h-4 rounded-full" title="Blockchain verified"></div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800 accessibility-focus">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-yellow-600 hover:text-yellow-800 accessibility-focus">
+                                        <i class="fas fa-star"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analyticsSection" class="hidden p-6">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2" data-translate="analyticsTitle">Advanced Analytics</h2>
+                        <p class="text-gray-600" data-translate="analyticsSubtitle">AI-powered insights and predictive analytics</p>
+                    </div>
+
+                    <!-- Analytics Dashboard -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6 h-72 flex flex-col">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex-shrink-0" data-translate="chartSentiment">Sentiment Analysis</h3>
+                            <div class="relative flex-grow">
+                                <canvas id="sentimentChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6 h-72 flex flex-col">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex-shrink-0" data-translate="chartPredictive">Predictive Maintenance</h3>
+                            <div class="relative flex-grow">
+                                <canvas id="predictiveChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights Panel -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="mlInsightsTitle">Machine Learning Insights</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border-l-4 border-blue-500">
+                                <h4 class="font-semibold text-blue-800 mb-2" data-translate="mlPredictive">🔮 Predictive Analysis</h4>
+                                <p class="text-blue-700" data-translate="mlPredictiveText">Based on historical data, we predict a 23% increase in water-related complaints in the next month due to summer season.</p>
+                            </div>
+                            
+                            <div class="p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-lg border-l-4 border-green-500">
+                                <h4 class="font-semibold text-green-800 mb-2" data-translate="mlPattern">📊 Pattern Recognition</h4>
+                                <p class="text-green-700" data-translate="mlPatternText">Road maintenance complaints show 67% correlation with recent rainfall data. Proactive maintenance recommended.</p>
+                            </div>
+                            
+                            <div class="p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg border-l-4 border-purple-500">
+                                <h4 class="font-semibold text-purple-800 mb-2" data-translate="mlOptimization">🎯 Optimization Suggestion</h4>
+                                <p class="text-purple-700" data-translate="mlOptimizationText">Deploying 2 additional PWD teams to Sector 7-9 could reduce average response time by 40%.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Metrics -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="deptEfficiency">Department Efficiency</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600" data-translate="deptPwd">PWD</span>
+                                    <span class="performance-excellent font-semibold">95%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600" data-translate="deptWater">Water Supply</span>
+                                    <span class="performance-good font-semibold">78%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600" data-translate="deptElectricity">Electricity</span>
+                                    <span class="performance-poor font-semibold">65%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="citizenSatisfaction">Citizen Satisfaction</h3>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-green-600 mb-2">4.2</div>
+                                <div class="flex justify-center text-yellow-400 mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <p class="text-sm text-gray-600" data-translate="basedOnReviews" data-translate-vars='{"count": "1,247"}'>Based on 1,247 reviews</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="responseTimeTrend">Response Time Trend</h3>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-blue-600 mb-2">2.4</div>
+                                <p class="text-gray-600 mb-2" data-translate="daysAverage">Days Average</p>
+                                <div class="flex items-center justify-center text-green-600">
+                                    <i class="fas fa-arrow-down mr-1"></i>
+                                    <span class="text-sm" data-translate="improvement" data-translate-vars='{"percent": 15}'>15% improvement</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- IoT Sensors Section -->
+                <section id="iotSection" class="hidden p-6">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2" data-translate="iotTitle">IoT Sensor Network</h2>
+                        <p class="text-gray-600" data-translate="iotSubtitle">Real-time environmental and infrastructure monitoring</p>
+                    </div>
+
+                    <!-- Sensor Status Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="iot-sensor w-12 h-12 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-thermometer-half text-white"></i>
+                                </div>
+                                <span class="pulse-dot w-3 h-3 bg-green-500 rounded-full"></span>
+                            </div>
+                            <h3 class="font-semibold text-gray-800" data-translate="sensorTemp">Temperature</h3>
+                            <p class="text-2xl font-bold text-gray-900">32°C</p>
+                            <p class="text-sm text-gray-600">Ranchi Central</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="iot-sensor w-12 h-12 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-tint text-white"></i>
+                                </div>
+                                <span class="pulse-dot w-3 h-3 bg-green-500 rounded-full"></span>
+                            </div>
+                            <h3 class="font-semibold text-gray-800" data-translate="sensorHumidity">Humidity</h3>
+                            <p class="text-2xl font-bold text-gray-900">68%</p>
+                            <p class="text-sm text-gray-600">Average across city</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="iot-sensor w-12 h-12 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-smog text-white"></i>
+                                </div>
+                                <span class="pulse-dot w-3 h-3 bg-yellow-500 rounded-full"></span>
+                            </div>
+                            <h3 class="font-semibold text-gray-800" data-translate="sensorAir">Air Quality</h3>
+                            <p class="text-2xl font-bold text-yellow-600">AQI 105</p>
+                            <p class="text-sm text-gray-600" data-translate="sensorModerate">Moderate</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="iot-sensor w-12 h-12 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-volume-up text-white"></i>
+                                </div>
+                                <span class="pulse-dot w-3 h-3 bg-red-500 rounded-full"></span>
+                            </div>
+                            <h3 class="font-semibold text-gray-800" data-translate="sensorNoise">Noise Level</h3>
+                            <p class="text-2xl font-bold text-red-600">78 dB</p>
+                            <p class="text-sm text-gray-600" data-translate="sensorAboveNormal">Above normal</p>
+                        </div>
+                    </div>
+
+                    <!-- Sensor Map -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="sensorMapTitle">Sensor Network Map</h3>
+                        <div class="h-96 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <div class="text-center">
+                                <i class="fas fa-map-marked-alt text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-600" data-translate="sensorMapPlaceholder">Interactive IoT sensor map would be displayed here</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Real-time Data -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="sensorRealtimeTitle">Real-time Sensor Data</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="text-left py-2" data-translate="tableSensorId">Sensor ID</th>
+                                        <th class="text-left py-2" data-translate="tableLocation">Location</th>
+                                        <th class="text-left py-2" data-translate="tableType">Type</th>
+                                        <th class="text-left py-2" data-translate="tableValue">Value</th>
+                                        <th class="text-left py-2" data-translate="tableStatus">Status</th>
+                                        <th class="text-left py-2" data-translate="tableLastUpdate">Last Update</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b">
+                                        <td class="py-2">TEMP-001</td>
+                                        <td class="py-2">Ranchi Central</td>
+                                        <td class="py-2" data-translate="sensorTemp">Temperature</td>
+                                        <td class="py-2">32°C</td>
+                                        <td class="py-2"><span class="text-green-600">●</span> <span data-translate="statusOnline">Online</span></td>
+                                        <td class="py-2" data-translate="timeAgo" data-translate-vars='{"time": 2, "unit": "min"}'>2 min ago</td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-2">AQI-007</td>
+                                        <td class="py-2">Industrial Area</td>
+                                        <td class="py-2" data-translate="sensorAir">Air Quality</td>
+                                        <td class="py-2">AQI 145</td>
+                                        <td class="py-2"><span class="text-yellow-600">●</span> <span data-translate="statusWarning">Warning</span></td>
+                                        <td class="py-2" data-translate="timeAgo" data-translate-vars='{"time": 5, "unit": "min"}'>5 min ago</td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-2">WATER-003</td>
+                                        <td class="py-2">Reservoir</td>
+                                        <td class="py-2">Water Level</td>
+                                        <td class="py-2">78%</td>
+                                        <td class="py-2"><span class="text-green-600">●</span> <span data-translate="statusNormal">Normal</span></td>
+                                        <td class="py-2" data-translate="timeAgo" data-translate-vars='{"time": 1, "unit": "min"}'>1 min ago</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Blockchain Section -->
+                <section id="blockchainSection" class="hidden p-6">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2" data-translate="blockchainTitle">Blockchain Transparency</h2>
+                        <p class="text-gray-600" data-translate="blockchainSubtitle">Immutable record of all civic activities</p>
+                    </div>
+
+                    <!-- Blockchain Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm" data-translate="bcTotalBlocks">Total Blocks</p>
+                                    <p class="text-3xl font-bold text-indigo-600">2,847</p>
+                                </div>
+                                <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-cubes text-indigo-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm" data-translate="bcVerifiedRecords">Verified Records</p>
+                                    <p class="text-3xl font-bold text-green-600">1,247</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-shield-alt text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm" data-translate="bcHashRate">Hash Rate</p>
+                                    <p class="text-3xl font-bold text-purple-600">98.7%</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-lock text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Blocks -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="bcRecentBlocks">Recent Blockchain Blocks</h3>
+                        <div class="space-y-4">
+                            <div class="blockchain-block p-4 rounded-lg text-white">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-mono text-sm" data-translate="bcBlock" data-translate-vars='{"id": 2847}'>Block #2847</span>
+                                    <span class="text-xs">2 min ago</span>
+                                </div>
+                                <div class="text-xs mb-2">
+                                    <p>Hash: 0x1a2b3c4d5e6f7890abcdef1234567890</p>
+                                    <p>Previous Hash: 0x9876543210fedcba0987654321</p>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span data-translate="bcTransactions" data-translate-vars='{"count": 3}'>3 Transactions</span>
+                                    <span data-translate="bcSize" data-translate-vars='{"size": "1.2"}'>Size: 1.2 KB</span>
+                                </div>
+                            </div>
+
+                            <div class="blockchain-block p-4 rounded-lg text-white">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-mono text-sm" data-translate="bcBlock" data-translate-vars='{"id": 2846}'>Block #2846</span>
+                                    <span class="text-xs" data-translate="timeAgo" data-translate-vars='{"time": 5, "unit": "min"}'>5 min ago</span>
+                                </div>
+                                <div class="text-xs mb-2">
+                                    <p>Hash: 0x9876543210fedcba0987654321abcdef</p>
+                                    <p>Previous Hash: 0x1234567890abcdef1234567890</p>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span data-translate="bcTransactions" data-translate-vars='{"count": 7}'>7 Transactions</span>
+                                    <span data-translate="bcSize" data-translate-vars='{"size": "2.8"}'>Size: 2.8 KB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Verification -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="bcVerifyTx">Verify Transaction</h3>
+                        <div class="flex space-x-4">
+                            <input type="text" data-translate-placeholder="bcVerifyPlaceholder" placeholder="Enter transaction hash or complaint ID" 
+                                   class="flex-1 border rounded-lg px-4 py-2 accessibility-focus">
+                            <button class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 accessibility-focus" data-translate="bcVerifyBtn">
+                                Verify
+                            </button>
+                        </div>
+                        <div class="mt-4 p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                                <span class="text-green-800 font-medium" data-translate="bcVerifiedMessage">Transaction verified on blockchain</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Budget Tracker Section -->
+                <section id="budgetSection" class="hidden p-6">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2" data-translate="budgetTitle">Budget Transparency</h2>
+                        <p class="text-gray-600" data-translate="budgetSubtitle">Track public fund allocation and spending</p>
+                    </div>
+
+                    <!-- Budget Overview -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col h-72">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="budgetAllocation">Budget Allocation</h3>
+                            <div class="flex-1 flex items-center justify-center">
+                                <canvas id="budgetChart" class="w-full h-full"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-center h-72">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="budgetSpending">Spending Progress</h3>
+                            <div class="flex-1 flex flex-col justify-center space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600" data-translate="budgetRoads">Roads & Infrastructure</span>
+                                        <span class="text-sm font-medium">₹12.5Cr / ₹15Cr</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-blue-600 h-3 rounded-full" style="width: 83%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600" data-translate="budgetWater">Water Supply</span>
+                                        <span class="text-sm font-medium">₹8.2Cr / ₹10Cr</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-green-600 h-3 rounded-full" style="width: 82%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600" data-translate="budgetHealth">Healthcare</span>
+                                        <span class="text-sm font-medium">₹5.8Cr / ₹8Cr</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-purple-600 h-3 rounded-full" style="width: 72%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Status -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="budgetProjects">Major Projects Status</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="text-left py-2" data-translate="tableProjectName">Project Name</th>
+                                        <th class="text-left py-2" data-translate="tableDepartment">Department</th>
+                                        <th class="text-left py-2" data-translate="tableBudget">Budget</th>
+                                        <th class="text-left py-2" data-translate="tableSpent">Spent</th>
+                                        <th class="text-left py-2" data-translate="tableProgress">Progress</th>
+                                        <th class="text-left py-2" data-translate="tableStatus">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b">
+                                        <td class="py-2">Ring Road Construction</td>
+                                        <td class="py-2" data-translate="deptPwd">PWD</td>
+                                        <td class="py-2">₹25 Cr</td>
+                                        <td class="py-2">₹18.5 Cr</td>
+                                        <td class="py-2">74%</td>
+                                        <td class="py-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs" data-translate="statusOnTrack">On Track</span></td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-2">Water Treatment Plant</td>
+                                        <td class="py-2" data-translate="deptWater">Water Supply</td>
+                                        <td class="py-2">₹15 Cr</td>
+                                        <td class="py-2">₹12.2 Cr</td>
+                                        <td class="py-2">81%</td>
+                                        <td class="py-2"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs" data-translate="statusAhead">Ahead</span></td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-2">Hospital Expansion</td>
+                                        <td class="py-2" data-translate="deptHealth">Health</td>
+                                        <td class="py-2">₹12 Cr</td>
+                                        <td class="py-2">₹7.8 Cr</td>
+                                        <td class="py-2">65%</td>
+                                        <td class="py-2"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs" data-translate="statusDelayed">Delayed</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Transparency Features -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="budgetFundUtilization">Fund Utilization</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-translate="budgetTotalAllocated">Total Allocated</span>
+                                    <span class="font-semibold">₹125 Cr</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-translate="budgetTotalSpent">Total Spent</span>
+                                    <span class="font-semibold text-blue-600">₹94.7 Cr</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-translate="budgetRemaining">Remaining</span>
+                                    <span class="font-semibold text-green-600">₹30.3 Cr</span>
+                                </div>
+                                <div class="flex justify-between border-t pt-2">
+                                    <span class="text-gray-600" data-translate="budgetUtilizationRate">Utilization Rate</span>
+                                    <span class="font-semibold text-purple-600">75.8%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="citizenFeedback">Citizens' Feedback</h3>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-green-600 mb-2">4.1</div>
+                                <div class="flex justify-center text-yellow-400 mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <p class="text-sm text-gray-600" data-translate="budgetTransparencyRating">Budget transparency rating</p>
+                                <p class="text-xs text-gray-500 mt-2" data-translate="basedOnReviews" data-translate-vars='{"count": "2,847"}'>Based on 2,847 citizen reviews</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Community Section -->
+                <section id="communitySection" class="hidden p-6">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2" data-translate="communityTitle">Community Engagement</h2>
+                        <p class="text-gray-600" data-translate="communitySubtitle">Connect, participate, and contribute to civic development</p>
+                    </div>
+
+                    <!-- Community Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                            <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-users text-pink-600 text-xl"></i>
+                            </div>
+                            <p class="text-2xl font-bold text-gray-800">12,847</p>
+                            <p class="text-sm text-gray-600" data-translate="communityActiveCitizens">Active Citizens</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-comments text-blue-600 text-xl"></i>
+                            </div>
+                            <p class="text-2xl font-bold text-gray-800">3,456</p>
+                            <p class="text-sm text-gray-600" data-translate="communityDiscussions">Discussions</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-poll text-green-600 text-xl"></i>
+                            </div>
+                            <p class="text-2xl font-bold text-gray-800">89</p>
+                            <p class="text-sm text-gray-600" data-translate="communityActivePolls">Active Polls</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-trophy text-purple-600 text-xl"></i>
+                            </div>
+                            <p class="text-2xl font-bold text-gray-800">1,234</p>
+                            <p class="text-sm text-gray-600" data-translate="communityCivicPoints">Civic Points</p>
+                        </div>
+                    </div>
+
+                    <!-- Community Features -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- Discussion Forum -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="communityRecentDiscussions">Recent Discussions</h3>
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-blue-500 pl-4">
+                                    <h4 class="font-medium text-gray-800" data-translate="discussion1Title">Road Safety in School Zone</h4>
+                                    <p class="text-sm text-gray-600 mt-1" data-translate="discussion1Text">Discussion about implementing speed breakers...</p>
+                                    <div class="flex items-center mt-2 text-xs text-gray-500">
+                                        <i class="fas fa-user mr-1"></i>
+                                        <span>Amit Kumar</span>
+                                        <span class="mx-2">•</span>
+                                        <span data-translate="replies" data-translate-vars='{"count": 23}'>23 replies</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="border-l-4 border-green-500 pl-4">
+                                    <h4 class="font-medium text-gray-800" data-translate="discussion2Title">Park Maintenance Initiative</h4>
+                                    <p class="text-sm text-gray-600 mt-1" data-translate="discussion2Text">Volunteers needed for weekend cleanup...</p>
+                                    <div class="flex items-center mt-2 text-xs text-gray-500">
+                                        <i class="fas fa-user mr-1"></i>
+                                        <span>Priya Singh</span>
+                                        <span class="mx-2">•</span>
+                                        <span data-translate="replies" data-translate-vars='{"count": 15}'>15 replies</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Polls & Surveys -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="communityActivePolls">Active Polls</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <h4 class="font-medium text-gray-800 mb-3" data-translate="poll1Title">Which area needs priority development?</h4>
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm" data-translate="poll1Opt1">Roads & Transport</span>
+                                            <span class="text-sm font-medium">45%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-blue-600 h-2 rounded-full" style="width: 45%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2 mt-3">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm" data-translate="poll1Opt2">Water Supply</span>
+                                            <span class="text-sm font-medium">35%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-600 h-2 rounded-full" style="width: 35%"></div>
+                                        </div>
+                                    </div>
+                                    <button class="mt-3 text-blue-600 text-sm hover:text-blue-800 accessibility-focus" data-translate="voteNow">Vote Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Leaderboard -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="communityLeaderboard">Top Contributors</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800">Rakesh Verma</p>
+                                        <p class="text-xs text-gray-600" data-translate="civicPoints" data-translate-vars='{"count": "2,847"}'>2,847 civic points</p>
+                                    </div>
+                                    <i class="fas fa-crown text-yellow-400"></i>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800">Sunita Devi</p>
+                                        <p class="text-xs text-gray-600" data-translate="civicPoints" data-translate-vars='{"count": "2,156"}'>2,156 civic points</p>
+                                    </div>
+                                    <i class="fas fa-medal text-gray-400"></i>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-orange-400 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800">Mohammed Ali</p>
+                                        <p class="text-xs text-gray-600" data-translate="civicPoints" data-translate-vars='{"count": "1,923"}'>1,923 civic points</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Civic Points System -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="civicPointsSystem">Civic Points System</h3>
+                        <p class="text-gray-600 mb-4" data-translate="civicPointsDesc">Earn civic points for participating in community services, reporting issues, and engaging in discussions.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-4 bg-green-50 rounded-lg">
+                                <h4 class="font-medium text-green-800 mb-2" data-translate="civicPointsService">Service Participation</h4>
+                                <p class="text-sm text-green-600" data-translate="civicPointsServiceDesc">Join community service activities</p>
+                            </div>
+                            <div class="p-4 bg-blue-50 rounded-lg">
+                                <h4 class="font-medium text-blue-800 mb-2" data-translate="civicPointsReporting">Issue Reporting</h4>
+                                <p class="text-sm text-blue-600" data-translate="civicPointsReportingDesc">Report civic issues and contribute to solutions</p>
+                            </div>
+                            <div class="p-4 bg-purple-50 rounded-lg">
+                                <h4 class="font-medium text-purple-800 mb-2" data-translate="civicPointsDiscussion">Discussion Engagement</h4>
+                                <p class="text-sm text-purple-600" data-translate="civicPointsDiscussionDesc">Participate in community discussions and polls</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Emergency Section -->
+                <section id="emergencySection" class="hidden p-6">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-red-700 mb-2 flex items-center">
+                            <i class="fas fa-ambulance mr-3"></i> <span data-translate="emergencyTitle">Emergency Services</span>
+                        </h2>
+                        <p class="text-gray-600" data-translate="emergencySubtitle">Choose the service you need</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <button id="callAmbulanceBtn" class="w-full bg-red-600 text-white py-6 rounded-xl font-semibold flex items-center justify-center space-x-4 text-lg shadow-lg hover:bg-red-700 transition accessibility-focus">
+                            <i class="fas fa-ambulance text-2xl"></i>
+                            <span data-translate="emergencyCallAmbulance">Call Ambulance</span>
+                        </button>
+                        <button id="requestBloodBtn" class="w-full bg-yellow-500 text-white py-6 rounded-xl font-semibold flex items-center justify-center space-x-4 text-lg shadow-lg hover:bg-yellow-600 transition accessibility-focus">
+                            <i class="fas fa-tint text-2xl"></i>
+                            <span data-translate="emergencyRequestBlood">Request Blood Donation</span>
+                        </button>
+                        <button id="callFireBrigadeBtn" class="w-full bg-blue-600 text-white py-6 rounded-xl font-semibold flex items-center justify-center space-x-4 text-lg shadow-lg hover:bg-blue-700 transition accessibility-focus">
+                            <i class="fas fa-fire-extinguisher text-2xl"></i>
+                            <span data-translate="emergencyCallFire">Call Fire Brigade</span>
+                        </button>
+                        <button id="contactPoliceBtn" class="w-full bg-green-600 text-white py-6 rounded-xl font-semibold flex items-center justify-center space-x-4 text-lg shadow-lg hover:bg-green-700 transition accessibility-focus">
+                            <i class="fas fa-user-shield text-2xl"></i>
+                            <span data-translate="emergencyContactPolice">Contact Police</span>
+                        </button>
+                    </div>
+                    <a href="tel:112" class="w-full bg-gray-700 text-white py-4 rounded-xl font-semibold flex items-center justify-center space-x-4 text-lg shadow-lg mb-4 hover:bg-gray-800 transition accessibility-focus">
+                        <i class="fas fa-phone-alt text-2xl"></i>
+                        <span data-translate="emergencyGeneralHelpline">General Helpline (112)</span>
+                    </a>
+                    <div class="mt-6 text-center text-xs text-gray-400" data-translate="emergencyFooter">
+                        For immediate help, call 112 or visit your nearest help center.
+                    </div>
+
+                    <!-- Blood Donation Request Form (hidden by default) -->
+                    <div id="bloodRequestForm" class="hidden mt-10 max-w-xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-2xl font-bold text-red-700 mb-4 flex items-center">
+                            <i class="fas fa-tint mr-2"></i> <span data-translate="bloodRequestTitle">Blood Donation Request</span>
+                        </h3>
+                        <form id="bloodForm" class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1" data-translate="bloodPatientName">Patient Name</label>
+                                <input type="text" name="patientName" required class="w-full border rounded-lg px-4 py-2 accessibility-focus" data-translate-placeholder="bloodPatientNamePlaceholder" placeholder="Enter patient name">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1" data-translate="bloodPatientAge">Patient Age</label>
+                                <input type="number" name="patientAge" min="0" required class="w-full border rounded-lg px-4 py-2 accessibility-focus" data-translate-placeholder="bloodPatientAgePlaceholder" placeholder="Enter age">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1" data-translate="bloodGroupNeeded">Blood Group Needed</label>
+                                <select name="bloodGroup" required class="w-full border rounded-lg px-4 py-2 accessibility-focus">
+                                    <option value="" data-translate="bloodSelectGroup">Select blood group</option>
+                                    <option>A+</option><option>A-</option>
+                                    <option>B+</option><option>B-</option>
+                                    <option>AB+</option><option>AB-</option>
+                                    <option>O+</option><option>O-</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1" data-translate="bloodUnitsRequired">Number of Units Required</label>
+                                <input type="number" name="units" min="1" required class="w-full border rounded-lg px-4 py-2 accessibility-focus" data-translate-placeholder="bloodUnitsPlaceholder" placeholder="e.g. 2">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1" data-translate="bloodHospital">Hospital & Location</label>
+                                <input type="text" name="hospital" required class="w-full border rounded-lg px-4 py-2 accessibility-focus" data-translate-placeholder="bloodHospitalPlaceholder" placeholder="Hospital name and address">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1" data-translate="bloodUrgency">Urgency (Date & Time)</label>
+                                <input type="datetime-local" name="urgency" required class="w-full border rounded-lg px-4 py-2 accessibility-focus">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1" data-translate="bloodContact">Contact Details</label>
+                                <input type="text" name="contact" required class="w-full border rounded-lg px-4 py-2 accessibility-focus" data-translate-placeholder="bloodContactPlaceholder" placeholder="Phone or email">
+                            </div>
+                            <div class="flex space-x-4 mt-6">
+                                <button type="submit" class="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600 accessibility-focus" data-translate="submitRequestBtn">
+                                    Submit Request
+                                </button>
+                                <button type="button" id="cancelBloodForm" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-300 accessibility-focus" data-translate="cancelBtn">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div id="bloodFormSuccess" class="hidden mt-4 text-green-700 bg-green-100 rounded-lg px-4 py-2"></div>
+                        </form>
+                    </div>
+
+                    <!-- Police Emergency Choice Modal -->
+                    <div id="policeEmergencyModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-blue-800 flex items-center" data-translate="policeAssistanceTitle"><i class="fas fa-user-shield mr-3"></i>Police Assistance</h2>
+                                    <p class="text-gray-600" data-translate="policeAssistanceSubtitle">What type of help do you need?</p>
+                                </div>
+                                <button id="closePoliceModal" class="text-gray-500 hover:text-gray-800 accessibility-focus text-2xl">&times;</button>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="space-y-4 mt-6">
+                                <button id="generalPoliceCallBtn" class="w-full bg-red-600 text-white p-4 rounded-lg flex items-center justify-center font-semibold hover:bg-red-700 transition">
+                                    <i class="fas fa-phone-alt mr-3"></i> <span data-translate="policeCallBtn">Call Police (100/112)</span>
+                                </button>
+                                <button id="reportCyberCrimeBtn" class="w-full bg-indigo-600 text-white p-4 rounded-lg flex items-center justify-center font-semibold hover:bg-indigo-700 transition">
+                                    <i class="fas fa-shield-alt mr-3"></i> <span data-translate="policeCyberBtn">Report Cyber Crime</span>
+                                </button>
+                                <button id="fileComplaintBtn" class="w-full bg-gray-700 text-white p-4 rounded-lg flex items-center justify-center font-semibold hover:bg-gray-800 transition">
+                                    <i class="fas fa-file-alt mr-3"></i> <span data-translate="policeFileComplaintBtn">File a Written Complaint</span>
+                                </button>
+                            </div>
+
+                            <!-- Hidden Location Info for reuse -->
+                            <div class="hidden">
+                                <p id="policeLocation">Fetching location...</p>
+                                <a id="policeMapLink" href="#"></a>
+                                <a id="policeSmsLink" href="#"></a>
+                                <a id="policeWhatsappLink" href="#"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW Cyber Crime Modal -->
+                    <div id="cyberCrimeModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg transform transition-all">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-indigo-800 flex items-center" data-translate="cyberTitle"><i class="fas fa-shield-alt mr-3"></i>Cyber Crime Reporting</h2>
+                                    <p class="text-gray-600" data-translate="cyberSubtitle">Take immediate action against cyber fraud.</p>
+                                </div>
+                                <button id="closeCyberCrimeModal" class="text-gray-500 hover:text-gray-800 accessibility-focus text-2xl">&times;</button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <!-- Step 1: Call Helpline -->
+                                <a href="tel:1930" class="block bg-red-600 text-white p-4 rounded-lg text-center font-semibold hover:bg-red-700">
+                                    <i class="fas fa-phone-alt mr-2"></i> <span data-translate="cyberStep1">Step 1: Call Helpline (1930)</span>
+                                </a>
+                                <!-- Step 2: Report Online -->
+                                <a href="https://cybercrime.gov.in/" target="_blank" class="block bg-blue-600 text-white p-4 rounded-lg text-center font-semibold hover:bg-blue-700">
+                                    <i class="fas fa-globe mr-2"></i> <span data-translate="cyberStep2">Step 2: Report on Portal</span>
+                                </a>
+                            </div>
+
+                            <!-- Attachments and Details -->
+                            <div class="mt-6 bg-gray-50 rounded-lg p-4 border">
+                                <h3 class="font-semibold text-gray-700 mb-3" data-translate="cyberStep3">Step 3: Add Details (Optional)</h3>
+                                <form id="cyberCrimeForm" class="space-y-3">
+                                    <input type="text" data-translate-placeholder="cyberTxIdPlaceholder" placeholder="Transaction ID / Reference No." class="w-full border rounded-lg px-3 py-2 text-sm accessibility-focus">
+                                    <textarea data-translate-placeholder="cyberDescPlaceholder" placeholder="Briefly describe the incident..." class="w-full border rounded-lg px-3 py-2 text-sm h-20 accessibility-focus"></textarea>
+                                    <div>
+                                        <label class="text-sm text-gray-600" data-translate="cyberAttachLabel">Attach Screenshot:</label>
+                                        <input type="file" accept="image/*" class="w-full text-sm mt-1">
+                                    </div>
+                                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700" data-translate="submitDetailsBtn">Submit Details</button>
+                                </form>
+                                <p id="cyberFormStatus" class="text-green-700 text-sm mt-2 hidden" data-translate="cyberSuccessMsg">Details submitted successfully.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Police Written Complaint Modal -->
+                    <div id="fileComplaintModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl transform transition-all">
+                            <div class="flex justify-between items-start mb-6">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-800 flex items-center" data-translate="fileComplaintTitle"><i class="fas fa-file-alt mr-3"></i>File a Complaint</h2>
+                                    <p class="text-gray-600" data-translate="fileComplaintSubtitle">Your report will be sent to the nearest police station.</p>
+                                </div>
+                                <button id="closeFileComplaintModal" class="text-gray-500 hover:text-gray-800 accessibility-focus text-2xl">&times;</button>
+                            </div>
+
+                            <form id="writtenComplaintForm" class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="complaintName" class="block text-sm font-medium text-gray-700" data-translate="complaintNameLabel">Name</label>
+                                        <input type="text" id="complaintName" required class="mt-1 w-full border rounded-lg px-3 py-2 accessibility-focus">
+                                    </div>
+                                    <div>
+                                        <label for="complaintContact" class="block text-sm font-medium text-gray-700" data-translate="complaintContactLabel">Contact Number</label>
+                                        <input type="tel" id="complaintContact" required class="mt-1 w-full border rounded-lg px-3 py-2 accessibility-focus">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="complaintLocation" class="block text-sm font-medium text-gray-700" data-translate="complaintLocationLabel">Location of Incident</label>
+                                    <input type="text" id="complaintLocation" required data-translate-placeholder="complaintLocationPlaceholder" placeholder="Auto-filling with your location..." class="mt-1 w-full border rounded-lg px-3 py-2 accessibility-focus bg-gray-50">
+                                </div>
+                                <div>
+                                    <label for="complaintCategory" class="block text-sm font-medium text-gray-700" data-translate="complaintCategoryLabel">Category</label>
+                                    <select id="complaintCategory" required class="mt-1 w-full border rounded-lg px-3 py-2 accessibility-focus">
+                                        <option value="" data-translate="categorySelect">Select a category...</option>
+                                        <option data-translate="categoryTheft">Theft / Robbery</option>
+                                        <option data-translate="categoryHarassment">Harassment</option>
+                                        <option data-translate="categoryAccident">Accident</option>
+                                        <option data-translate="categoryCyber">Cyber Fraud</option>
+                                        <option data-translate="categoryMissing">Missing Person</option>
+                                        <option data-translate="categoryOther">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="complaintDescription" class="block text-sm font-medium text-gray-700" data-translate="complaintDescriptionLabel">Description</label>
+                                    <textarea id="complaintDescription" rows="4" required class="mt-1 w-full border rounded-lg px-3 py-2 accessibility-focus"></textarea>
+                                </div>
+                                <div>
+                                    <label for="complaintAttachment" class="block text-sm font-medium text-gray-700" data-translate="complaintAttachmentLabel">Attach Evidence (Photo/Video/File)</label>
+                                    <input type="file" id="complaintAttachment" class="mt-1 w-full text-sm">
+                                </div>
+                                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition" data-translate="submitComplaintBtn">Submit Complaint</button>
+                            </form>
+                            <div id="complaintSubmissionStatus" class="hidden mt-4 p-4 bg-green-50 rounded-lg border-l-4 border-green-500 text-green-800"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ambulance Modal -->
+                <div id="ambulanceModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg text-center transform transition-all">
+                        <div class="text-red-500 mb-4">
+                            <i class="fas fa-ambulance fa-4x animate-pulse"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2" data-translate="ambulanceCalling">Calling Ambulance (108)...</h2>
+                        <p class="text-gray-600 mb-6" data-translate="ambulanceStayCalm">Stay calm. Help is on the way. Your location has been detected.</p>
+
+                        <div class="bg-gray-50 rounded-lg p-4 text-left space-y-3 mb-6 border">
+                            <div>
+                                <h3 class="font-semibold text-gray-700" data-translate="yourLocation">Your Current Location:</h3>
+                                <p id="ambulanceLocation" class="text-gray-600 text-sm" data-translate="fetchingLocation">Fetching location...</p>
+                            </div>
+                            <div>
+                                <a id="ambulanceMapLink" href="#" target="_blank" class="text-blue-600 hover:underline text-sm font-medium hidden">
+                                    <i class="fas fa-map-marker-alt mr-1"></i> <span data-translate="viewOnMap">View on Google Maps</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 rounded-lg p-4 text-left space-y-3 border-l-4 border-blue-400">
+                             <h3 class="font-semibold text-gray-700" data-translate="sendSmsContact">Send SMS to Emergency Contact:</h3>
+                             <p class="text-gray-600 text-sm" data-translate="tapToSendSms">Tap below to send your location via SMS.</p>
+                             <a id="ambulanceSmsLink" href="#" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium">
+                                <i class="fas fa-sms mr-1"></i> <span data-translate="sendLocation">Send Location</span>
+                             </a>
+                        </div>
+
+                        <button id="closeAmbulanceModal" class="mt-8 bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-300 accessibility-focus" data-translate="closeBtn">Close</button>
+                    </div>
+                </div>
+
+                <!-- Fire Brigade Modal -->
+                <div id="fireBrigadeModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg text-center transform transition-all">
+                        <div class="text-orange-500 mb-4">
+                            <i class="fas fa-fire-extinguisher fa-4x animate-pulse"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2" data-translate="fireCalling">Calling Fire Brigade (101)...</h2>
+                        <p class="text-gray-600 mb-6" data-translate="fireProvideLocation">Please provide the exact location of the fire to the operator.</p>
+
+                        <div class="bg-gray-50 rounded-lg p-4 text-left space-y-3 mb-6 border">
+                            <div>
+                                <h3 class="font-semibold text-gray-700" data-translate="yourLocation">Your Current Location:</h3>
+                                <p id="fireBrigadeLocation" class="text-gray-600 text-sm" data-translate="fetchingLocation">Fetching location...</p>
+                            </div>
+                            <div>
+                                <a id="fireBrigadeMapLink" href="#" target="_blank" class="text-blue-600 hover:underline text-sm font-medium hidden">
+                                    <i class="fas fa-map-marker-alt mr-1"></i> <span data-translate="viewOnMap">View on Google Maps</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 rounded-lg p-4 text-left space-y-3 border-l-4 border-blue-400">
+                             <h3 class="font-semibold text-gray-700" data-translate="sendSmsContact">Send Location via SMS:</h3>
+                             <p class="text-gray-600 text-sm" data-translate="tapToSendSms">Tap below to send your location to an emergency contact.</p>
+                             <a id="fireBrigadeSmsLink" href="#" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium">
+                                <i class="fas fa-sms mr-1"></i> <span data-translate="sendLocation">Send Location</span>
+                             </a>
+                        </div>
+
+                        <button id="closeFireBrigadeModal" class="mt-8 bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-300 accessibility-focus" data-translate="closeBtn">Close</button>
+                    </div>
+                </div>
+
+                <!-- NEW Complaint Modal (Moved Here) -->
+                <div id="newComplaintModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl transform transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 flex items-center"><i class="fas fa-plus-circle mr-3"></i> <span data-translate="newComplaintTitle">File a New Complaint</span></h2>
+                                <p class="text-gray-600" data-translate="newComplaintSubtitle">Capture an image and describe the issue.</p>
+                            </div>
+                            <button id="closeNewComplaintModal" class="text-gray-500 hover:text-gray-800 accessibility-focus text-2xl">&times;</button>
+                        </div>
+
+                        <form id="newComplaintForm" class="space-y-4">
+                            <!-- Image Capture & Preview -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-translate="captureEvidence">Capture Evidence</label>
+                                <div class="mt-1 flex items-center space-x-4">
+                                    <label for="complaintImage" class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center">
+                                        <i class="fas fa-camera mr-2"></i>
+                                        <span data-translate="openCamera">Open Camera</span>
+                                    </label>
+                                    <input type="file" id="complaintImage" accept="image/*" capture="environment" class="hidden" required>
+                                    <img id="imagePreview" src="" alt="Image Preview" class="hidden h-20 w-20 object-cover rounded-lg border">
+                                </div>
+                            </div>
+
+                            <!-- Location Preview -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-translate="incidentLocation">Incident Location</label>
+                                <div id="complaintMapPreview" class="mt-1 h-40 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
+                                    <span data-translate="fetchingLocation">Fetching location...</span>
+                                </div>
+                                <p id="complaintCoordinates" class="text-xs text-gray-500 mt-1"></p>
+                            </div>
+
+                            <!-- Category -->
+                            <div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="mainCategory" class="block text-sm font-medium text-gray-700" data-translate="mainCategoryLabel">Main Category</label>
+                                        <select id="mainCategory" required class="mt-1 w-full border rounded-lg px-3 py-2 accessibility-focus">
+                                            <option value="" data-translate="categorySelect">Select a category...</option>
+                                            <!-- Options will be populated by JS -->
+                                        </select>
+                                    </div>
+                                    <div id="subCategoryContainer" class="hidden">
+                                        <label for="subCategory" class="block text-sm font-medium text-gray-700" data-translate="subCategoryLabel">Sub-Category</label>
+                                        <select id="subCategory" required class="mt-1 w-full border rounded-lg px-3 py-2 accessibility-focus">
+                                            <!-- Options will be populated by JS -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div>
+                                <label for="newComplaintDescription" class="block text-sm font-medium text-gray-700" data-translate="complaintDescriptionLabel">Description (Optional)</label>
+                                <textarea id="newComplaintDescription" rows="3" class="mt-1 w-full border rounded-lg px-3 py-2 accessibility-focus"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition" data-translate="submitComplaintBtn">Submit Complaint</button>
+                        </form>
+                        <div id="newComplaintStatus" class="hidden mt-4 p-4 bg-green-50 rounded-lg border-l-4 border-green-500 text-green-800"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+<!--
+[PROMPT_SUGGESTION]How to implement infinite scrolling for the complaints list?[/PROMPT_SUGGESTION]
+[PROMPT_SUGGESTION]Can you help me add a search bar to the complaints page?[/PROMPT_SUGGESTION]
